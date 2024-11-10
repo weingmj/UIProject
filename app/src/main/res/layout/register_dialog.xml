@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TableLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TableRow
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <TextView android:text="id" />
+
+            <EditText
+                android:layout_marginStart="16dp"
+                android:hint="id 입력"
+                android:id="@+id/editText_register_id"/>
+        </TableRow>
+
+        <TableRow
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <TextView android:text="pw"/>
+
+            <EditText
+                android:layout_marginStart="16dp"
+                android:id="@+id/editText_register_pw"
+                android:hint="암호 입력"/>
+        </TableRow>
+
+        <TableRow
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <TextView android:text="e-mail" />
+
+            <EditText
+                android:layout_marginStart="16dp"
+                android:id="@+id/editText_register_email"
+                android:hint="이메일 입력"/>
+        </TableRow>
+
+        <TableRow
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <Button
+                style="@style/Widget.Material3.Button.TextButton"
+                android:id="@+id/button_getCertificationMail"
+                android:layout_column="1"
+                android:layout_height="40dp"
+                android:text="인증 메일 받기"
+                android:textColor="@color/black" />
+        </TableRow>
+
+        <TableRow
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content">
+            <Button
+                style="@style/Widget.Material3.Button.TextButton"
+                android:textColor="@color/black"
+                android:layout_column="1"
+                android:layout_height="40dp"
+                android:text="회원가입"
+                android:id="@+id/button_register_regiButton"
+                />
+        </TableRow>
+    </TableLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

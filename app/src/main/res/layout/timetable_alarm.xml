@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/textView_alarm_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="알람 설정"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <CheckBox
+        android:id="@+id/checkBox_alarm_enabler"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="알람 기능 활성화"
+        app:layout_constraintStart_toStartOf="@+id/textView_alarm_set1"
+        app:layout_constraintTop_toBottomOf="@+id/textView_alarm_title" />
+
+    <TextView
+        android:id="@+id/textView_alarm_set1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="첫 수업의"
+        app:layout_constraintBottom_toBottomOf="@+id/numberPicker_alarm_hour"
+        app:layout_constraintEnd_toStartOf="@+id/numberPicker_alarm_hour"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/numberPicker_alarm_hour" />
+
+    <NumberPicker
+        android:id="@+id/numberPicker_alarm_hour"
+        android:layout_width="wrap_content"
+        android:layout_height="120dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="3dp"
+        app:layout_constraintEnd_toStartOf="@+id/textView_alarm_set2"
+        app:layout_constraintStart_toEndOf="@+id/textView_alarm_set1"
+        app:layout_constraintTop_toBottomOf="@+id/checkBox_alarm_enabler"/>
+
+    <TextView
+        android:id="@+id/textView_alarm_set2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="6dp"
+        android:text="시간"
+        app:layout_constraintBottom_toBottomOf="@+id/numberPicker_alarm_hour"
+        app:layout_constraintEnd_toStartOf="@+id/numberPicker_alarm_minute"
+        app:layout_constraintStart_toEndOf="@+id/numberPicker_alarm_hour"
+        app:layout_constraintTop_toTopOf="@+id/numberPicker_alarm_hour" />
+
+    <NumberPicker
+        android:id="@+id/numberPicker_alarm_minute"
+        android:layout_width="wrap_content"
+        android:layout_height="120dp"
+        app:layout_constraintEnd_toStartOf="@+id/textView_alarm_set3"
+        app:layout_constraintStart_toEndOf="@+id/textView_alarm_set2"
+        app:layout_constraintTop_toTopOf="@+id/numberPicker_alarm_hour" />
+
+    <TextView
+        android:id="@+id/textView_alarm_set3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="분 전으로 알람 설정"
+        app:layout_constraintBottom_toBottomOf="@+id/numberPicker_alarm_minute"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/numberPicker_alarm_minute"
+        app:layout_constraintTop_toTopOf="@+id/numberPicker_alarm_minute" />
+
+    <NumberPicker
+        android:id="@+id/numberPicker_alarm_repeatCount"
+        android:layout_width="wrap_content"
+        android:layout_height="120dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toStartOf="@+id/textView_alarm_set1"
+        app:layout_constraintTop_toBottomOf="@+id/numberPicker_alarm_hour" />
+
+    <TextView
+        android:id="@+id/textView_alarm_set4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:text="분 간격으로"
+        app:layout_constraintBottom_toBottomOf="@+id/numberPicker_alarm_repeatCount"
+        app:layout_constraintStart_toEndOf="@+id/numberPicker_alarm_repeatCount"
+        app:layout_constraintTop_toTopOf="@+id/numberPicker_alarm_repeatCount" />
+
+    <NumberPicker
+        android:id="@+id/numberPicker_alarm_repeatTime"
+        android:layout_width="wrap_content"
+        android:layout_height="120dp"
+        android:layout_marginStart="16dp"
+        app:layout_constraintStart_toEndOf="@+id/textView_alarm_set4"
+        app:layout_constraintTop_toTopOf="@+id/numberPicker_alarm_repeatCount" />
+
+    <TextView
+        android:id="@+id/textView_alarm_set5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:text="회 반복"
+        app:layout_constraintBottom_toBottomOf="@+id/numberPicker_alarm_repeatTime"
+        app:layout_constraintStart_toEndOf="@+id/numberPicker_alarm_repeatTime"
+        app:layout_constraintTop_toTopOf="@+id/numberPicker_alarm_repeatTime" />
+
+    <Button
+        android:id="@+id/button_alarm_songPicker"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="노래 선택"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/numberPicker_alarm_repeatTime" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
