@@ -11,10 +11,8 @@ import androidx.core.view.WindowInsetsCompat;
 import com.example.uiproject.databinding.CommunityReplyBinding;
 
 public class CommunityReply extends AppCompatActivity {
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         CommunityReplyBinding binding = CommunityReplyBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
