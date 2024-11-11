@@ -2,16 +2,22 @@ package com.example.uiproject;
 
 import static android.view.Gravity.TOP;
 
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+
 import com.example.uiproject.databinding.TimetableMainBinding;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.io.BufferedWriter;
+
 
 public class TimetableMain extends AppCompatActivity {
     private TimetableMainBinding binding;
@@ -29,6 +35,8 @@ public class TimetableMain extends AppCompatActivity {
         List<EachLecture> list = new ArrayList<>();
         EachLecture eachLecture = new EachLecture("화", 11, 30, 15, 20, "sample");
         list.add(eachLecture);
+        EachLecture eachLecture2 = new EachLecture("수", 12, 40, 16, 10, "sample222222");
+        list.add(eachLecture2);
         int[][] pos = new int[5][2]; // pos[n][x or y] : n요일의 x, y좌표
         binding.textViewTimetableMon.getLocationOnScreen(pos[0]);
         binding.textViewTimetableTue.getLocationOnScreen(pos[1]);
@@ -64,7 +72,7 @@ public class TimetableMain extends AppCompatActivity {
             button.setMinWidth(30);
             button.setWidth(eachBlockSize[0]);
             button.setOnClickListener(view -> {
-                Log.d("WMJ", "hi "+String.valueOf(cnt.getAndIncrement()));
+                Log.d("WMJ", "hi "+ cnt.getAndIncrement());
             });
             // 생성된 TextView에 레이아웃 파라미터 적용
             button.setX(x);
@@ -74,7 +82,7 @@ public class TimetableMain extends AppCompatActivity {
             button.setTextSize(12);
             button.setHeight(eachBlockSize[1] * ((e.getEndHour() * 60 + e.getEndMin()) - (e.getStartHour() * 60 + e.getStartMin())) / 60);
             Log.d("WMJ", String.valueOf(eachBlockSize[1] * ((e.getEndHour() * 60 + e.getEndMin()) - (e.getStartHour() * 60 + e.getStartMin())) / 60));
-            button.setBackground(getResources().getDrawable(R.color.pink));
+            button.setBackground(ContextCompat.getDrawable(this, e.getColor()));
             Log.d("WMJ", String.valueOf(eachBlockSize[1]));
             // binding의 부모 레이아웃에 TextView 추가
             binding.getRoot().addView(button);
@@ -89,6 +97,7 @@ class EachLecture {
     private int endHour;
     private int endMin;
     private String lectureName;
+    private int color;
 
     public EachLecture(String weekDay, int startHour, int startMin, int endHour, int endMin, String lectureName) {
         this.weekDay = weekDay;
@@ -97,6 +106,20 @@ class EachLecture {
         this.endHour = endHour;
         this.endMin = endMin;
         this.lectureName = lectureName;
+        int [] randomColorList = {R.color.pink,
+                R.color.aquamarine,
+                R.color._light_green,
+                R.color.coral,
+                R.color.cold,
+                R.color.dark_salmon,
+                R.color.dark_olive_green,
+                R.color.medium_slate_blue};
+        Random random = new Random();
+        this.color = randomColorList[random.nextInt(randomColorList.length)];
+    }
+
+    public int getColor() {
+        return color;
     }
 
     public String getWeekDay() {
