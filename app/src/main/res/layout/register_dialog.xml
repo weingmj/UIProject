@@ -2,8 +2,11 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:paddingEnd="32dp"
+    android:paddingBottom="32dp"
+    android:paddingTop="16dp">
 
     <TableLayout
         android:layout_width="wrap_content"
@@ -19,36 +22,47 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
 
-            <TextView android:text="id" />
+            <TextView android:text="id"
+                android:textSize="24sp"
+                android:layout_marginStart="16dp"/>
 
             <EditText
-                android:layout_marginStart="16dp"
                 android:hint="id 입력"
-                android:id="@+id/editText_register_id"/>
+                android:layout_marginStart="32dp"
+                android:id="@+id/editText_register_id"
+                android:textSize="32sp"/>
         </TableRow>
 
         <TableRow
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            >
 
-            <TextView android:text="pw"/>
+            <TextView android:text="pw"
+                android:textSize="24sp"
+                android:layout_marginStart="16dp"/>
 
             <EditText
-                android:layout_marginStart="16dp"
                 android:id="@+id/editText_register_pw"
-                android:hint="암호 입력"/>
+                android:hint="암호 입력"
+                android:layout_marginStart="32dp"
+                android:textSize="32sp"/>
         </TableRow>
 
         <TableRow
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            >
 
-            <TextView android:text="e-mail" />
+            <TextView android:text="e-mail"
+                android:textSize="24sp"
+                android:layout_marginStart="16dp"/>
 
             <EditText
-                android:layout_marginStart="16dp"
                 android:id="@+id/editText_register_email"
-                android:hint="이메일 입력"/>
+                android:hint="이메일 입력"
+                android:layout_marginStart="32dp"
+                android:textSize="32sp"/>
         </TableRow>
 
         <TableRow
@@ -56,10 +70,13 @@
             android:layout_height="wrap_content">
 
             <Button
+                android:layout_marginStart="-32dp"
+                android:layout_marginEnd="40dp"
                 style="@style/Widget.Material3.Button.TextButton"
                 android:id="@+id/button_getCertificationMail"
                 android:layout_column="1"
-                android:layout_height="40dp"
+                android:layout_height="50dp"
+                android:textSize="20sp"
                 android:text="인증 메일 받기"
                 android:textColor="@color/black" />
         </TableRow>
@@ -69,9 +86,12 @@
             android:layout_width="wrap_content">
             <Button
                 style="@style/Widget.Material3.Button.TextButton"
-                android:textColor="@color/black"
+                android:textColor="@color/dark_gray"
                 android:layout_column="1"
-                android:layout_height="40dp"
+                android:layout_marginStart="-32dp"
+                android:layout_marginEnd="40dp"
+                android:layout_height="50dp"
+                android:textSize="20sp"
                 android:text="회원가입"
                 android:id="@+id/button_register_regiButton"
                 />
