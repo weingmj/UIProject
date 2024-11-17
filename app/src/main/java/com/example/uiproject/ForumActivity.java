@@ -1,7 +1,6 @@
 package com.example.uiproject;
 
 import android.os.Bundle;
-
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.uiproject.databinding.CommunityForumBinding;
