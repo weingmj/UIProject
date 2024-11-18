@@ -3,6 +3,8 @@ package com.example.uiproject;
 import static android.os.SystemClock.sleep;
 import static android.view.Gravity.TOP;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -18,6 +20,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
+import com.example.uiproject.databinding.TimetableDialogAddplanBinding;
 import com.example.uiproject.databinding.TimetableMainBinding;
 
 import java.util.ArrayList;
@@ -66,11 +69,131 @@ public class TimetableMain extends AppCompatActivity {
         binding.timetableImageButtonAddPlan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //dialog 띄우고 가능한 시간 입력하면 됨
+                boolean [] dayClicked = {false, false, false, false, false};
+                LayoutInflater layoutInflater = getLayoutInflater();
+                TimetableDialogAddplanBinding timetableDialogAddplanBinding = TimetableDialogAddplanBinding.inflate(getLayoutInflater());
+                Dialog dialog = new Dialog(TimetableMain.this);
+                dialog.setContentView(timetableDialogAddplanBinding.getRoot());
+                timetableDialogAddplanBinding.buttonAddplanMon.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (!dayClicked[0]) {
+                            setFalse(dayClicked);
+                            dayClicked[0] = true;
+                            timetableDialogAddplanBinding.buttonAddplanMon.setTextColor(getColor(R.color.red));
+                            timetableDialogAddplanBinding.buttonAddplanTue.setTextColor(getColor(R.color.black));
+                            timetableDialogAddplanBinding.buttonAddplanWed.setTextColor(getColor(R.color.black));
+                            timetableDialogAddplanBinding.buttonAddplanThu.setTextColor(getColor(R.color.black));
+                            timetableDialogAddplanBinding.buttonAddplanFri.setTextColor(getColor(R.color.black));
+                            timetableDialogAddplanBinding.buttonAddplanAdd.setTextColor(getColor(R.color.black));
+                        } else {
+                            dayClicked[0] = false;
+                            timetableDialogAddplanBinding.buttonAddplanMon.setTextColor(getColor(R.color.black));
+                            timetableDialogAddplanBinding.buttonAddplanAdd.setTextColor(getColor(R.color.gray));
+                        }
+                    }
+                });
+                timetableDialogAddplanBinding.buttonAddplanTue.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (!dayClicked[1]) {
+                            setFalse(dayClicked);
+                            dayClicked[1] = true;
+                            timetableDialogAddplanBinding.buttonAddplanMon.setTextColor(getColor(R.color.black));
+                            timetableDialogAddplanBinding.buttonAddplanTue.setTextColor(getColor(R.color.red));
+                            timetableDialogAddplanBinding.buttonAddplanWed.setTextColor(getColor(R.color.black));
+                            timetableDialogAddplanBinding.buttonAddplanThu.setTextColor(getColor(R.color.black));
+                            timetableDialogAddplanBinding.buttonAddplanFri.setTextColor(getColor(R.color.black));
+                            timetableDialogAddplanBinding.buttonAddplanAdd.setTextColor(getColor(R.color.black));
+                        } else {
+                            dayClicked[1] = false;
+                            timetableDialogAddplanBinding.buttonAddplanTue.setTextColor(getColor(R.color.black));
+                            timetableDialogAddplanBinding.buttonAddplanAdd.setTextColor(getColor(R.color.gray));
+                        }
+                    }
+                });
+                timetableDialogAddplanBinding.buttonAddplanWed.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (!dayClicked[2]) {
+                            setFalse(dayClicked);
+                            dayClicked[2] = true;
+                            timetableDialogAddplanBinding.buttonAddplanMon.setTextColor(getColor(R.color.black));
+                            timetableDialogAddplanBinding.buttonAddplanTue.setTextColor(getColor(R.color.black));
+                            timetableDialogAddplanBinding.buttonAddplanWed.setTextColor(getColor(R.color.red));
+                            timetableDialogAddplanBinding.buttonAddplanThu.setTextColor(getColor(R.color.black));
+                            timetableDialogAddplanBinding.buttonAddplanFri.setTextColor(getColor(R.color.black));
+                            timetableDialogAddplanBinding.buttonAddplanAdd.setTextColor(getColor(R.color.black));
+                        } else {
+                            dayClicked[2] = false;
+                            timetableDialogAddplanBinding.buttonAddplanWed.setTextColor(getColor(R.color.black));
+                            timetableDialogAddplanBinding.buttonAddplanAdd.setTextColor(getColor(R.color.gray));
+                        }
+                    }
+                });
+                timetableDialogAddplanBinding.buttonAddplanThu.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (!dayClicked[3]) {
+                            setFalse(dayClicked);
+                            dayClicked[3] = true;
+                            timetableDialogAddplanBinding.buttonAddplanMon.setTextColor(getColor(R.color.black));
+                            timetableDialogAddplanBinding.buttonAddplanTue.setTextColor(getColor(R.color.black));
+                            timetableDialogAddplanBinding.buttonAddplanWed.setTextColor(getColor(R.color.black));
+                            timetableDialogAddplanBinding.buttonAddplanThu.setTextColor(getColor(R.color.red));
+                            timetableDialogAddplanBinding.buttonAddplanFri.setTextColor(getColor(R.color.black));
+                            timetableDialogAddplanBinding.buttonAddplanAdd.setTextColor(getColor(R.color.black));
+                        } else {
+                            dayClicked[3] = false;
+                            timetableDialogAddplanBinding.buttonAddplanThu.setTextColor(getColor(R.color.black));
+                            timetableDialogAddplanBinding.buttonAddplanAdd.setTextColor(getColor(R.color.gray));
+                        }
+                    }
+                });
+                timetableDialogAddplanBinding.buttonAddplanFri.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (!dayClicked[4]) {
+                            setFalse(dayClicked);
+                            dayClicked[4] = true;
+                            timetableDialogAddplanBinding.buttonAddplanMon.setTextColor(getColor(R.color.black));
+                            timetableDialogAddplanBinding.buttonAddplanTue.setTextColor(getColor(R.color.black));
+                            timetableDialogAddplanBinding.buttonAddplanWed.setTextColor(getColor(R.color.black));
+                            timetableDialogAddplanBinding.buttonAddplanThu.setTextColor(getColor(R.color.black));
+                            timetableDialogAddplanBinding.buttonAddplanFri.setTextColor(getColor(R.color.red));
+                            timetableDialogAddplanBinding.buttonAddplanAdd.setTextColor(getColor(R.color.black));
+                        } else {
+                            dayClicked[4] = false;
+                            timetableDialogAddplanBinding.buttonAddplanFri.setTextColor(getColor(R.color.black));
+                            timetableDialogAddplanBinding.buttonAddplanAdd.setTextColor(getColor(R.color.gray));
+                        }
+                    }
+                });
+                timetableDialogAddplanBinding.numberPickerAddplanStartHour.setMinValue(startTime);
+                timetableDialogAddplanBinding.numberPickerAddplanStartHour.setMaxValue(endTime);
+                timetableDialogAddplanBinding.numberPickerAddplanStartMin.setMinValue(0);
+                timetableDialogAddplanBinding.numberPickerAddplanStartMin.setMaxValue(59);
+                timetableDialogAddplanBinding.numberPickerAddplanEndHour.setMinValue(startTime);
+                timetableDialogAddplanBinding.numberPickerAddplanEndHour.setMaxValue(endTime);
+                timetableDialogAddplanBinding.numberPickerAddplanEndMin.setMinValue(0);
+                timetableDialogAddplanBinding.numberPickerAddplanEndMin.setMaxValue(59);
+                timetableDialogAddplanBinding.buttonAddplanAdd.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        //dayClicked[0]~[4]까지 true있으면 해당 일정이 가능한지 검사, 아무것도 true가 아니면 날짜선택해달라 하면 됨
+                    }
+                });
+                dialog.show();
             }
         });
     }
-
+    protected void setFalse(boolean[] arr) {
+        int i = 0;
+        for (boolean b : arr) {
+            arr[i] = false;
+            i++;
+        }
+    }
     protected void setColorList() {
         colorList[0] = R.color.medium_slate_blue;
         colorList[1] = R.color.cold;
