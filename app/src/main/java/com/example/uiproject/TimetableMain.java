@@ -255,7 +255,6 @@ public class TimetableMain extends AppCompatActivity {
             y = pos[0][1] + y * eachBlockSize[1] - 8;
             y += eachBlockSize[1] * e.getStartMin() / 60;
             y += ((binding.timetableTable.getHeight() * 0.05) / 100);
-            Log.d("WMJ", String.valueOf(binding.timetableTable.getHeight()));
             TextView button = new TextView(this);
             button.setText(e.getLectureName());
             button.setMinWidth(30);

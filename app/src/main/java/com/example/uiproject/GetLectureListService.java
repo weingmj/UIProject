@@ -21,7 +21,12 @@ public class GetLectureListService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         String userInput = intent.getStringExtra("url");
-        sendHttpRequest("https://timetable-service-261079985553.us-central1.run.app/?url=" + userInput);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                sendHttpRequest("https://timetable-service-261079985553.us-central1.run.app/?url=" + userInput);
+            }
+        }).start();
         return START_NOT_STICKY;
     }
 
