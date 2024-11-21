@@ -4,6 +4,7 @@ import android.app.Service;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.IBinder;
+import android.os.ResultReceiver;
 import android.util.Log;
 import android.widget.TextView;
 
@@ -16,11 +17,12 @@ import java.net.URL;
 public class GetLectureListService extends Service {
 
     private static final String TAG = "GetLectureList";
-    private TextView responseTextView; // UI에 응답을 표시할 TextView
+    ResultReceiver receiver;
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         String userInput = intent.getStringExtra("url");
+        receiver = intent.getParcelableExtra("receiver");
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -77,8 +79,9 @@ public class GetLectureListService extends Service {
         // SharedPreferences 사용
         SharedPreferences sharedPreferences = getSharedPreferences("app_data", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString(getString(R.string.saved_lecturelist), data); // saved_lecturelist에 저장
+        editor.putString(getString(R.string.saved_lecturelist), data);
         editor.apply();
+        receiver.send(0, null);
     }
 
     @Nullable

@@ -1,13 +1,14 @@
 package com.example.uiproject;
 
-import static android.os.SystemClock.sleep;
 import static android.view.Gravity.TOP;
 
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Parcel;
+import android.os.Parcelable;
+import android.os.ResultReceiver;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,12 +19,11 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 
 import com.example.uiproject.databinding.TimetableDialogAddplanBinding;
 import com.example.uiproject.databinding.TimetableMainBinding;
-
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.StringTokenizer;
@@ -35,13 +35,16 @@ public class TimetableMain extends AppCompatActivity {
     private final int startTime = 9;
     private final int endTime = 21;
     static int [] colorList = new int[15];
+    List<EachLecture> list;
+    List<PairedLecture> pairedLectureList;
+    boolean [][][] timetableManager;
+    int success;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         String userInput;
         super.onCreate(savedInstanceState);
         binding = TimetableMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        setColorList();
         LayoutInflater inflater = getLayoutInflater();
         for (int i = 19 + 1; i <= endTime; i++) {
             TableRow tableRow = (TableRow) inflater.inflate(R.layout.timetable_main_eachrow, null);
@@ -54,23 +57,18 @@ public class TimetableMain extends AppCompatActivity {
             binding.timetableTable.addView(tableRow);
             TextView t = (TextView) tableRow.getChildAt(0);
             t.setText(String.valueOf(i));
-            userInput = "https://everytime.kr/@X5z3rQ2ToUIvLmfo34fb";
-            Intent intent = new Intent(this, GetLectureListService.class);
-            intent.putExtra("url", userInput);
-            startService(intent);
-            binding.getRoot().getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                @Override
-                public void onGlobalLayout() {
-                    binding.getRoot().getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                    initializeTimetable();
-                }
-            });
         }
+        binding.getRoot().getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                binding.getRoot().getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                initializeTimetable();
+            }
+        });
         binding.timetableImageButtonAddPlan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 boolean [] dayClicked = {false, false, false, false, false};
-                LayoutInflater layoutInflater = getLayoutInflater();
                 TimetableDialogAddplanBinding timetableDialogAddplanBinding = TimetableDialogAddplanBinding.inflate(getLayoutInflater());
                 Dialog dialog = new Dialog(TimetableMain.this);
                 dialog.setContentView(timetableDialogAddplanBinding.getRoot());
@@ -187,6 +185,7 @@ public class TimetableMain extends AppCompatActivity {
             }
         });
     }
+
     protected void setFalse(boolean[] arr) {
         int i = 0;
         for (boolean b : arr) {
@@ -194,88 +193,138 @@ public class TimetableMain extends AppCompatActivity {
             i++;
         }
     }
-    protected void setColorList() {
-        colorList[0] = R.color.medium_slate_blue;
-        colorList[1] = R.color.cold;
-        colorList[2] = R.color.pink;
-        colorList[3] = R.color.coral;
-        colorList[4] = R.color.dark_sea_green;
-        colorList[5] = R.color.dark_olive_green;
-        colorList[6] = R.color.light_sea_green;
-        colorList[7] = R.color._light_green;
-        colorList[8] = R.color.aquamarine;
-        colorList[9] = R.color.dark_orange;
-        colorList[10] = R.color.dodger_blue;
-        colorList[11] = R.color.light_coral;
-        colorList[12] = R.color.medium_orchid;
-        colorList[13] = R.color.light_sky_blue;
-        colorList[14] = R.color.rosy_brown;
-    }
 
     private void initializeTimetable() {
-        SharedPreferences sharedPreferences = getSharedPreferences("app_data", MODE_PRIVATE);
-        String lectureString = sharedPreferences.getString(getString(R.string.saved_lecturelist), "No data found");
-        StringTokenizer tokenizer = new StringTokenizer(lectureString, "\n");
-        List<EachLecture> list = new ArrayList<>();
-        int k = 0;
-        while (tokenizer.hasMoreTokens()) {
-            String temp = tokenizer.nextToken();
-            if (temp.isBlank()) break;
-            list.add(new EachLecture(temp));
-        }
-
-        int[][] pos = new int[5][2]; // pos[n][x or y] : n요일의 x, y좌표
-        binding.textViewTimetableMon.getLocationOnScreen(pos[0]);
-        binding.textViewTimetableTue.getLocationOnScreen(pos[1]);
-        binding.textViewTimetableWed.getLocationOnScreen(pos[2]);
-        binding.textViewTimetableThr.getLocationOnScreen(pos[3]);
-        binding.textViewTimetableFri.getLocationOnScreen(pos[4]);
-        int[] eachBlockSize = {binding.timetableEachBlockSample.getWidth(), binding.timetableEachBlockSample.getHeight()};
-        AtomicInteger cnt = new AtomicInteger();
-        for (EachLecture e : list) {
-            int x = 0, y;
-            switch (e.getWeekDay()) {
-                case ("월") :
-                    x = pos[0][0];
-                    break;
-                case ("화") :
-                    x = pos[1][0];
-                    break;
-                case ("수") :
-                    x = pos[2][0];
-                    break;
-                case ("목") :
-                    x = pos[3][0];
-                    break;
-                case ("금") :
-                    x = pos[4][0];
-                    break;
+        ResultReceiver resultReceiver = new ResultReceiver(new Handler()) {
+            @Override
+            protected void onReceiveResult(int resultCode, Bundle resultData) {
+                super.onReceiveResult(resultCode, resultData);
+                // Service에서 돌아온 데이터를 받음
+                if (resultData != null) {
+                    list = resultData.getParcelableArrayList("eachLectureList");
+                    pairedLectureList = resultData.getParcelableArrayList("pairedLectureList");
+                    timetableManager = (boolean[][][]) resultData.getSerializable("timetableManager");
+                    success = resultData.getInt("isSuccess");
+                    setTimeTable();
+                }
             }
-            y = e.getStartHour() - startTime;
-            y = pos[0][1] + y * eachBlockSize[1] - 8;
-            y += eachBlockSize[1] * e.getStartMin() / 60;
-            y += ((binding.timetableTable.getHeight() * 0.05) / 100);
-            TextView button = new TextView(this);
-            button.setText(e.getLectureName());
-            button.setMinWidth(30);
-            button.setWidth(eachBlockSize[0]);
-            button.setOnClickListener(view -> {
-                Log.d("WMJ", "hi "+ cnt.getAndIncrement());
-            });
-            button.setX(x);
-            button.setY(y);
-            button.setGravity(TOP);
-            button.setPadding(4, 4, 0, 0);
-            button.setTextSize(12);
-            button.setHeight(eachBlockSize[1] * ((e.getEndHour() * 60 + e.getEndMin()) - (e.getStartHour() * 60 + e.getStartMin())) / 60);
-            button.setBackground(ContextCompat.getDrawable(this, e.getColor()));
-            // binding의 부모 레이아웃에 TextView 추가
-            binding.getRoot().addView(button);
+        };
+        Intent serviceIntent = new Intent(this, ManageLectureList.class);
+        serviceIntent.putExtra("receiver", resultReceiver);
+        startService(serviceIntent);
+    }
+    private void setTimeTable() {
+        if (success == 1) {
+            int k = 0;
+            int[][] pos = new int[5][2]; // pos[n][x or y] : n요일의 x, y좌표
+            binding.textViewTimetableMon.getLocationOnScreen(pos[0]);
+            binding.textViewTimetableTue.getLocationOnScreen(pos[1]);
+            binding.textViewTimetableWed.getLocationOnScreen(pos[2]);
+            binding.textViewTimetableThr.getLocationOnScreen(pos[3]);
+            binding.textViewTimetableFri.getLocationOnScreen(pos[4]);
+            int[] eachBlockSize = {binding.timetableEachBlockSample.getWidth(), binding.timetableEachBlockSample.getHeight()};
+            AtomicInteger cnt = new AtomicInteger();
+            for (PairedLecture p : pairedLectureList) {
+                int x = 0, y;
+                if (!p.paired) {
+                    switch (p.getWeekDay(0)) {
+                        case (0):
+                            x = pos[0][0];
+                            break;
+                        case (1):
+                            x = pos[1][0];
+                            break;
+                        case (2):
+                            x = pos[2][0];
+                            break;
+                        case (3):
+                            x = pos[3][0];
+                            break;
+                        case (4):
+                            x = pos[4][0];
+                            break;
+                    }
+                    y = p.getStartHour(0) - startTime;
+                    y = pos[0][1] + y * eachBlockSize[1] - 8;
+                    y += eachBlockSize[1] * p.getStartMin(0) / 60;
+                    y += ((binding.timetableTable.getHeight() * 0.05) / 100);
+                    TextView button = new TextView(this);
+                    button.setText(p.getLectureName());
+                    button.setMinWidth(30);
+                    button.setWidth(eachBlockSize[0]);
+                    button.setOnClickListener(view -> {
+                        Log.d("WMJ", "hi " + cnt.getAndIncrement());
+                    });
+                    button.setX(x);
+                    button.setY(y);
+                    button.setGravity(TOP);
+                    button.setPadding(4, 4, 0, 0);
+                    button.setTextSize(12);
+                    button.setHeight(eachBlockSize[1] * ((p.getEndHour(0) * 60 + p.getEndMin(0)) - (p.getStartHour(0) * 60 + p.getStartMin(0))) / 60);
+                    button.setBackground(ContextCompat.getDrawable(this, p.getColor()));
+                    binding.getRoot().addView(button);
+                } else {
+                    for (int i = 0; i < 2; i++) {
+                        switch (p.getWeekDay(i)) {
+                            case (0):
+                                x = pos[0][0];
+                                break;
+                            case (1):
+                                x = pos[1][0];
+                                break;
+                            case (2):
+                                x = pos[2][0];
+                                break;
+                            case (3):
+                                x = pos[3][0];
+                                break;
+                            case (4):
+                                x = pos[4][0];
+                                break;
+                        }
+                        y = p.getStartHour(i) - startTime;
+                        y = pos[0][1] + y * eachBlockSize[1] - 8;
+                        y += eachBlockSize[1] * p.getStartMin(0) / 60;
+                        y += ((binding.timetableTable.getHeight() * 0.05) / 100);
+                        TextView button = new TextView(this);
+                        button.setText(p.getLectureName());
+                        button.setMinWidth(30);
+                        button.setWidth(eachBlockSize[0]);
+                        button.setOnClickListener(view -> {
+                            Log.d("WMJ", "hi " + cnt.getAndIncrement());
+                        });
+                        button.setX(x);
+                        button.setY(y);
+                        button.setGravity(TOP);
+                        button.setPadding(4, 4, 0, 0);
+                        button.setTextSize(12);
+                        button.setHeight(eachBlockSize[1] * ((p.getEndHour(i) * 60 + p.getEndMin(i)) - (p.getStartHour(i) * 60 + p.getStartMin(i))) / 60);
+                        button.setBackground(ContextCompat.getDrawable(this, p.getColor()));
+                        binding.getRoot().addView(button);
+                    }
+                }
+            }
+        } else {
+            binding.timetableTable.setVisibility(View.GONE);
+            binding.timetableTextViewTableName.setVisibility(View.GONE);
+            TextView textView = new TextView(this);
+            textView.setText("에브리타임에서 시간표를 추가해주세요!");
+            ConstraintLayout.LayoutParams params = new ConstraintLayout.LayoutParams(
+                    ConstraintLayout.LayoutParams.WRAP_CONTENT,
+                    ConstraintLayout.LayoutParams.WRAP_CONTENT
+            );
+            params.leftToLeft = ConstraintLayout.LayoutParams.PARENT_ID;
+            params.topToTop = ConstraintLayout.LayoutParams.PARENT_ID;
+            params.rightToRight = ConstraintLayout.LayoutParams.PARENT_ID;
+            params.bottomToBottom = ConstraintLayout.LayoutParams.PARENT_ID;
+            textView.setTextSize(24);
+            textView.setLayoutParams(params);
+            binding.getRoot().addView(textView);
         }
     }
 }
 
-class EachLecture {
+class EachLecture implements Parcelable{
     String [] lectureInfo; // 강의명 / 요일 / 시작 시간/분 / 끝 시간/분 순서로 저장
     int color;
     public EachLecture(String input) {
@@ -289,6 +338,23 @@ class EachLecture {
         Random random = new Random();
         color = TimetableMain.colorList[random.nextInt(15)];
     }
+
+    protected EachLecture(Parcel in) {
+        lectureInfo = in.createStringArray();
+        color = in.readInt();
+    }
+
+    public static final Creator<EachLecture> CREATOR = new Creator<EachLecture>() {
+        @Override
+        public EachLecture createFromParcel(Parcel in) {
+            return new EachLecture(in);
+        }
+
+        @Override
+        public EachLecture[] newArray(int size) {
+            return new EachLecture[size];
+        }
+    };
 
     @NonNull
     @Override
@@ -316,5 +382,16 @@ class EachLecture {
     }
     int getColor() {
         return color;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(@NonNull Parcel parcel, int i) {
+        parcel.writeStringArray(lectureInfo);
+        parcel.writeInt(color);
     }
 }
