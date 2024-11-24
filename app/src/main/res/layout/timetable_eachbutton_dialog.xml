@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/textView_timetable_eachButton_LectureName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:text="강의 이름"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button_timetable_eachButton_delete" />
+
+    <TextView
+        android:id="@+id/textView_timetable_eachButton_firstLectureName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:text="첫 번째 수업"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView_timetable_eachButton_LectureName" />
+
+    <TextView
+        android:id="@+id/textView_timetable_eachButton_firstLectureTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="00 : 00 ~ 00 : 00"
+        app:layout_constraintEnd_toEndOf="@+id/textView_timetable_eachButton_firstLectureName"
+        app:layout_constraintStart_toStartOf="@+id/textView_timetable_eachButton_firstLectureName"
+        app:layout_constraintTop_toBottomOf="@+id/textView_timetable_eachButton_firstLectureName" />
+
+    <TextView
+        android:id="@+id/textView_timetable_eachButton_secondLecturename"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="두 번째 수업"
+        app:layout_constraintEnd_toEndOf="@+id/textView_timetable_eachButton_firstLectureTime"
+        app:layout_constraintStart_toStartOf="@+id/textView_timetable_eachButton_firstLectureTime"
+        app:layout_constraintTop_toBottomOf="@+id/textView_timetable_eachButton_firstLectureTime" />
+
+    <TextView
+        android:id="@+id/textView_timetable_eachButton_secondLectureTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="16dp"
+        android:text="00 : 00 ~ 00 : 00"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/textView_timetable_eachButton_secondLecturename"
+        app:layout_constraintStart_toStartOf="@+id/textView_timetable_eachButton_secondLecturename"
+        app:layout_constraintTop_toBottomOf="@+id/textView_timetable_eachButton_secondLecturename" />
+
+    <androidx.appcompat.widget.AppCompatImageButton
+        android:id="@+id/button_timetable_eachButton_close"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:src="@drawable/arrow_back"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatImageButton
+        android:id="@+id/button_timetable_eachButton_delete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:src="@drawable/trashcan"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>

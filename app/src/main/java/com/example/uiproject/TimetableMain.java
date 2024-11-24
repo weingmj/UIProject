@@ -2,8 +2,10 @@ package com.example.uiproject;
 
 import static android.view.Gravity.TOP;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Parcel;
@@ -13,17 +15,23 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 
 import com.example.uiproject.databinding.TimetableDialogAddplanBinding;
 import com.example.uiproject.databinding.TimetableMainBinding;
+
+
 import java.util.List;
 import java.util.Random;
 import java.util.StringTokenizer;
@@ -34,11 +42,12 @@ public class TimetableMain extends AppCompatActivity {
     private TimetableMainBinding binding;
     private final int startTime = 9;
     private final int endTime = 21;
-    static int [] colorList = new int[15];
+    static int[] colorList = new int[15];
     List<EachLecture> list;
     List<PairedLecture> pairedLectureList;
-    boolean [][][] timetableManager;
+    boolean[][][] timetableManager;
     int success;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         String userInput;
@@ -68,7 +77,7 @@ public class TimetableMain extends AppCompatActivity {
         binding.timetableImageButtonAddPlan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                boolean [] dayClicked = {false, false, false, false, false};
+                boolean[] dayClicked = {false, false, false, false, false};
                 TimetableDialogAddplanBinding timetableDialogAddplanBinding = TimetableDialogAddplanBinding.inflate(getLayoutInflater());
                 Dialog dialog = new Dialog(TimetableMain.this);
                 dialog.setContentView(timetableDialogAddplanBinding.getRoot());
@@ -178,12 +187,97 @@ public class TimetableMain extends AppCompatActivity {
                 timetableDialogAddplanBinding.buttonAddplanAdd.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        //dayClicked[0]~[4]까지 true있으면 해당 일정이 가능한지 검사, 아무것도 true가 아니면 날짜선택해달라 하면 됨
+                        int day = -1;
+                        for (int i = 0; i < 5; i++) {
+                            if (dayClicked[i]) day = i;
+                        }
+                        int startHour = timetableDialogAddplanBinding.numberPickerAddplanStartHour.getValue();
+                        int startMin = timetableDialogAddplanBinding.numberPickerAddplanStartMin.getValue();
+                        int endHour = timetableDialogAddplanBinding.numberPickerAddplanEndHour.getValue();
+                        int endMin = timetableDialogAddplanBinding.numberPickerAddplanEndMin.getValue();
+                        boolean breaker = false;
+                        if (day != -1) {
+                            if (startHour == endHour) {
+                                if (startMin < endMin) {
+                                    for (int i = startMin; i < endMin && !breaker; i++) {
+                                        if (timetableManager[day][startHour - startTime][i]) {
+                                            Toast.makeText(TimetableMain.this, "다른 시간대를 선택해주세요.", Toast.LENGTH_SHORT).show();
+                                            breaker = true;
+                                        }
+                                    }
+                                } else {
+                                    Toast.makeText(TimetableMain.this, "시작 시간이 종료 시간보다 늦습니다.", Toast.LENGTH_SHORT).show();
+                                    breaker = true;
+                                }
+                            } else if (startHour < endHour) {
+                                for (int i = startMin; i < 60 && !breaker; i++) {
+                                    if (timetableManager[day][startHour - startTime][i]) {
+                                        Toast.makeText(TimetableMain.this, "다른 시간대를 선택해주세요.", Toast.LENGTH_SHORT).show();
+                                        breaker = true;
+                                    }
+                                }
+                                for (int i = startHour + 1; i < endHour - 1 && !breaker; i++) {
+                                    for (int j = 0; j < 60 && !breaker; j++) {
+                                        if (timetableManager[day][i - startTime][j]) {
+                                            Toast.makeText(TimetableMain.this, "다른 시간대를 선택해주세요.", Toast.LENGTH_SHORT).show();
+                                            breaker = true;
+                                        }
+                                    }
+                                }
+                                for (int i = 0; i < endMin && !breaker; i++) {
+                                    if (timetableManager[day][endHour - startTime][i]) {
+                                        Toast.makeText(TimetableMain.this, "다른 시간대를 선택해주세요.", Toast.LENGTH_SHORT).show();
+                                        breaker = true;
+                                    }
+                                }
+                            } else {
+                                Toast.makeText(TimetableMain.this, "시작 시간이 종료 시간보다 늦습니다.", Toast.LENGTH_SHORT).show();
+                                breaker = true;
+                            }
+                            if (!breaker) {
+                                SharedPreferences sharedPreferences = getSharedPreferences("app_data", MODE_PRIVATE);
+                                SharedPreferences.Editor editor = sharedPreferences.edit();
+                                String origin = sharedPreferences.getString("saved_lecturelist", "Oops!");
+                                if (!origin.equals("Oops!")) {
+                                    origin = origin.trim();
+                                    String adder = "\n" +
+                                            timetableDialogAddplanBinding.editTextAddplanInputPlan.getText() + " "
+                                            + intToDay(day) + " "
+                                            + startHour + " "
+                                            + startMin + " "
+                                            + endHour + " "
+                                            + endMin + "\n";
+                                    origin = origin.concat(adder);
+                                    editor.putString("saved_lecturelist", origin);
+                                    editor.apply();
+                                    recreate();
+                                }
+                            }
+                        } else {
+                            Toast.makeText(TimetableMain.this, "요일을 선택해주세요.", Toast.LENGTH_SHORT).show();
+                        }
                     }
                 });
                 dialog.show();
             }
         });
+
+    }
+
+    private String intToDay(int day) {
+        switch (day) {
+            case 0:
+                return "월";
+            case 1:
+                return "화";
+            case 2:
+                return "수";
+            case 3:
+                return "목";
+            case 4:
+                return "금";
+        }
+        return "error";
     }
 
     protected void setFalse(boolean[] arr) {
@@ -213,6 +307,25 @@ public class TimetableMain extends AppCompatActivity {
         serviceIntent.putExtra("receiver", resultReceiver);
         startService(serviceIntent);
     }
+
+    private void deleteLecture(String lectureName) {
+        SharedPreferences sharedPreferences = getSharedPreferences("app_data", MODE_PRIVATE);
+        String lectureMass = sharedPreferences.getString(getString(R.string.saved_lecturelist), "Oops!");
+        StringTokenizer tokenizer = new StringTokenizer(lectureMass, "\n");
+        String result = "";
+        while (tokenizer.hasMoreTokens()) {
+            String temp = tokenizer.nextToken();
+            if (temp.isBlank()) break;
+            StringTokenizer eachLectureName = new StringTokenizer(temp, " ");
+            if (!eachLectureName.nextToken().equals(lectureName)) {
+                result = result.concat(temp + "\n");
+            }
+        }
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("saved_lecturelist", result);
+        editor.apply();
+    }
+
     private void setTimeTable() {
         if (success == 1) {
             int k = 0;
@@ -253,7 +366,49 @@ public class TimetableMain extends AppCompatActivity {
                     button.setMinWidth(30);
                     button.setWidth(eachBlockSize[0]);
                     button.setOnClickListener(view -> {
-                        Log.d("WMJ", "hi " + cnt.getAndIncrement());
+                        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+                        LayoutInflater inflater = getLayoutInflater();
+                        View dialogView = inflater.inflate(R.layout.timetable_eachbutton_dialog_single, null);
+
+                        TextView LectureName = dialogView.findViewById(R.id.textView_timetable_eachButton_LectureName);
+                        LectureName.setText(p.getLectureName());
+
+                        TextView FirstLectureTime = dialogView.findViewById(R.id.textView_timetable_eachButton_firstLectureTime);
+                        String temp = intToDay(p.getWeekDay(0)) +  "요일 " +
+                                p.getStartHour(0) + " : "
+                                + (p.getStartMin(0) < 10 ? "0" + p.getStartMin(0) : p.getStartMin(0)) + " ~ "
+                                + p.getEndHour(0) + " : "
+                                + (p.getEndMin(0) < 10 ? "0" + p.getEndMin(0) : p.getEndMin(0));
+                        FirstLectureTime.setText(temp);
+
+                        builder.setView(dialogView);
+
+                        AlertDialog dialog = builder.create();
+                        dialog.show();
+                        Window window = dialog.getWindow();
+                        if (window != null) {
+                            WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
+                            layoutParams.copyFrom(window.getAttributes());
+                            layoutParams.width = 600; // 너비를 256dp로 고정
+                            layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT; // 높이는 내용물에 맞춤
+                            window.setAttributes(layoutParams);
+                        }
+                        AppCompatImageButton buttonClose = dialogView.findViewById(R.id.button_timetable_eachButton_close);
+                        buttonClose.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                dialog.dismiss();
+                            }
+                        });
+                        AppCompatImageButton buttonDelete = dialogView.findViewById(R.id.button_timetable_eachButton_delete);
+                        buttonDelete.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                deleteLecture(p.getLectureName());
+                                recreate();
+                            }
+                        });
                     });
                     button.setX(x);
                     button.setY(y);
@@ -291,7 +446,65 @@ public class TimetableMain extends AppCompatActivity {
                         button.setMinWidth(30);
                         button.setWidth(eachBlockSize[0]);
                         button.setOnClickListener(view -> {
-                            Log.d("WMJ", "hi " + cnt.getAndIncrement());
+                            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                            int fastLecture = 0;
+                            int slowLecture = 1;
+                            if (p.getWeekDay(0) > p.getWeekDay(1)) {
+                                fastLecture = 1;
+                                slowLecture = 0;
+                            } else if (p.getWeekDay(0) == p.getWeekDay(1)) {
+                                if (p.getStartHour(0) > p.getStartHour(1)) {
+                                    fastLecture = 1;
+                                    slowLecture = 0;
+                                }
+                            }
+                            LayoutInflater inflater = getLayoutInflater();
+                            View dialogView = inflater.inflate(R.layout.timetable_eachbutton_dialog, null);
+
+                            TextView LectureName = dialogView.findViewById(R.id.textView_timetable_eachButton_LectureName);
+                            LectureName.setText(p.getLectureName());
+
+                            TextView FirstLectureTime = dialogView.findViewById(R.id.textView_timetable_eachButton_firstLectureTime);
+                            String temp = intToDay(p.getWeekDay(fastLecture)) +  "요일 "
+                                    + p.getStartHour(fastLecture) + " : "
+                                    + (p.getStartMin(fastLecture) < 10 ? "0" + p.getStartMin(fastLecture) : p.getStartMin(fastLecture)) + " ~ "
+                                    + p.getEndHour(fastLecture) + " : "
+                                    + (p.getEndMin(fastLecture) < 10 ? "0" + p.getEndMin(fastLecture) : p.getEndMin(fastLecture));
+                            FirstLectureTime.setText(temp);
+
+                            TextView SecondLectureTime = dialogView.findViewById(R.id.textView_timetable_eachButton_secondLectureTime);
+                            String temp2 = intToDay(p.getWeekDay(slowLecture)) +  "요일 "
+                                    + p.getStartHour(slowLecture) + " : "
+                                    + (p.getStartMin(slowLecture) < 10 ? "0" + p.getStartMin(slowLecture) : p.getStartMin(slowLecture)) + " ~ "
+                                    + p.getEndHour(slowLecture) + " : "
+                                    + (p.getEndMin(slowLecture) < 10 ? "0" + p.getEndMin(slowLecture) : p.getEndMin(slowLecture));
+                            SecondLectureTime.setText(temp2);
+                            AppCompatImageButton buttonClose = dialogView.findViewById(R.id.button_timetable_eachButton_close);
+                            builder.setView(dialogView);
+                            AlertDialog dialog = builder.create();
+                            dialog.show();
+                            Window window = dialog.getWindow();
+                            if (window != null) {
+                                WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
+                                layoutParams.copyFrom(window.getAttributes());
+                                layoutParams.width = 600;
+                                layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
+                                window.setAttributes(layoutParams);
+                            }
+                            buttonClose.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    dialog.dismiss();
+                                }
+                            });
+                            AppCompatImageButton buttonDelete = dialogView.findViewById(R.id.button_timetable_eachButton_delete);
+                            buttonDelete.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    deleteLecture(p.getLectureName());
+                                    recreate();
+                                }
+                            });
                         });
                         button.setX(x);
                         button.setY(y);
@@ -320,13 +533,15 @@ public class TimetableMain extends AppCompatActivity {
             textView.setTextSize(24);
             textView.setLayoutParams(params);
             binding.getRoot().addView(textView);
+
         }
     }
 }
 
-class EachLecture implements Parcelable{
-    String [] lectureInfo; // 강의명 / 요일 / 시작 시간/분 / 끝 시간/분 순서로 저장
+class EachLecture implements Parcelable {
+    String[] lectureInfo; // 강의명 / 요일 / 시작 시간/분 / 끝 시간/분 순서로 저장
     int color;
+
     public EachLecture(String input) {
         StringTokenizer tokenizer = new StringTokenizer(input, " ");
         lectureInfo = new String[6];
@@ -365,21 +580,27 @@ class EachLecture implements Parcelable{
     String getLectureName() {
         return lectureInfo[0];
     }
+
     String getWeekDay() {
         return lectureInfo[1];
     }
+
     int getStartHour() {
         return Integer.parseInt(lectureInfo[2]);
     }
+
     int getStartMin() {
         return Integer.parseInt(lectureInfo[3]);
     }
+
     int getEndHour() {
         return Integer.parseInt(lectureInfo[4]);
     }
+
     int getEndMin() {
         return Integer.parseInt(lectureInfo[5]);
     }
+
     int getColor() {
         return color;
     }

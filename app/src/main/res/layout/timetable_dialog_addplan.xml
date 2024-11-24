@@ -15,19 +15,29 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <EditText
+        android:id="@+id/editText_addplan_inputPlan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:hint="일정 이름 입력"
+        app:layout_constraintEnd_toEndOf="@+id/textView_addplan_title"
+        app:layout_constraintStart_toStartOf="@+id/textView_addplan_title"
+        app:layout_constraintTop_toBottomOf="@+id/textView_addplan_title" />
+
     <Button
         android:id="@+id/button_addplan_mon"
         style="@style/Widget.MaterialComponents.Button.OutlinedButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="16dp"
         android:minWidth="50dp"
         android:text="월"
         android:textColor="@color/black"
         app:layout_constraintEnd_toStartOf="@id/button_addplan_tue"
         app:layout_constraintStart_toStartOf="@+id/textView_addplan_title"
-        app:layout_constraintTop_toBottomOf="@+id/textView_addplan_title" />
+        app:layout_constraintTop_toBottomOf="@+id/editText_addplan_inputPlan" />
 
     <Button
         android:id="@+id/button_addplan_tue"

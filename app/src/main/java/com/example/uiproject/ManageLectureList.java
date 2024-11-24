@@ -124,11 +124,6 @@ public class ManageLectureList extends Service {
             }
             pairedLectureList.add(p);
         }
-        Log.d("WMJ", "hihi");
-        Iterator<PairedLecture> iter = pairedLectureList.iterator();
-        for (;iter.hasNext();) {
-            Log.d("WMJ", iter.next().getLectureName());
-        }
     }
 
     private void setTimetableManager() {
@@ -172,6 +167,7 @@ public class ManageLectureList extends Service {
             return -1;
         }
     }
+
     protected void setColorList() {
         colorList = new HashSet<>();
         colorList.add(R.color.medium_slate_blue);

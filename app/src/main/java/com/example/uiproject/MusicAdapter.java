@@ -1,5 +1,6 @@
 package com.example.uiproject;
 
+import android.app.Dialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,15 +12,22 @@ import java.util.ArrayList;
 public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MusicViewHolder> {
 
     private ArrayList<String> musicList;
-
-    public MusicAdapter(ArrayList<String> musicList) {
+    private Dialog dialog;
+    public MusicAdapter(ArrayList<String> musicList, Dialog dialog) {
         this.musicList = musicList;
+        this.dialog = dialog;
     }
 
     @NonNull
     @Override
     public MusicViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.timetable_alarm_eachsong, parent, false);
+        view.findViewById(R.id.musicTitle).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
         return new MusicViewHolder(view);
     }
 

@@ -47,7 +47,7 @@ public class TimetableAlarm extends AppCompatActivity {
         RecyclerView recyclerView = dialog.findViewById(R.id.recyclerView_songSelector);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setItemViewCacheSize(30);
-        MusicAdapter musicAdapter = new MusicAdapter(musicList);
+        MusicAdapter musicAdapter = new MusicAdapter(musicList, dialog);
         recyclerView.setAdapter(musicAdapter);
         dialog.show();
     }
