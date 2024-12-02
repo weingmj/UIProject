@@ -13,6 +13,7 @@ springJcl = "5.3.10"
 annotation = "1.9.1"
 lifecycleLivedataKtx = "2.8.7"
 lifecycleViewmodelKtx = "2.8.7"
+firebaseDatabase = "21.0.0"
 
 [libraries]
 io-appium-java-client = { module = "io.appium:java-client", version.ref = "appiumJavaClient" }
@@ -28,6 +29,7 @@ spring-jcl = { module = "org.springframework:spring-jcl", version.ref = "springJ
 annotation = { group = "androidx.annotation", name = "annotation", version.ref = "annotation" }
 lifecycle-livedata-ktx = { group = "androidx.lifecycle", name = "lifecycle-livedata-ktx", version.ref = "lifecycleLivedataKtx" }
 lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycleViewmodelKtx" }
+firebase-database = { group = "com.google.firebase", name = "firebase-database", version.ref = "firebaseDatabase" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

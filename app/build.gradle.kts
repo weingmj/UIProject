@@ -47,6 +47,7 @@ dependencies {
     implementation(libs.annotation)
     implementation(libs.lifecycle.livedata.ktx)
     implementation(libs.lifecycle.viewmodel.ktx)
+    implementation(libs.firebase.database)
     testImplementation(libs.junit)
     testImplementation("io.appium:java-client:8.4.0")
     androidTestImplementation(libs.ext.junit)
