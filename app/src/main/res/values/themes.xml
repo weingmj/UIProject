@@ -1,8 +1,9 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Base.Theme.UIProject" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="colorPrimary">@color/colorPrimary</item> <!-- 중간 초록색 -->
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item> <!-- 어두운 초록색 -->
+        <item name="colorAccent">@color/colorAccent</item> <!-- 밝은 초록색 -->
     </style>
 
     <style name="Theme.UIProject" parent="Base.Theme.UIProject" />

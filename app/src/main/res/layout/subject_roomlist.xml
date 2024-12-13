@@ -27,6 +27,7 @@
             android:text="방 추가" />
 
         <TextView
+            android:id="@+id/subject_textView_ifEmptyRoomList"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="생성된 과목방이 없습니다."

@@ -46,6 +46,7 @@ public class InputURL extends AppCompatActivity {
                 Intent intent = new Intent(InputURL.this, GetLectureListService.class);
                 intent.putExtra("url", userInput);
                 intent.putExtra("receiver", receiver);
+                intent.putExtra("fromEveryTime", true);
                 startService(intent);
             }
         });

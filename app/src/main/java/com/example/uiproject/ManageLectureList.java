@@ -3,6 +3,7 @@ package com.example.uiproject;
 import android.app.Service;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Parcel;
@@ -42,6 +43,7 @@ public class ManageLectureList extends Service {
         bundle.putSerializable("timetableManager", timetableManager);
         ResultReceiver receiver = intent.getParcelableExtra("receiver");
         receiver.send(0, bundle);
+
         return START_NOT_STICKY;
     }
 
@@ -51,15 +53,6 @@ public class ManageLectureList extends Service {
         throw new UnsupportedOperationException("Not yet implemented");
     }
 
-    public boolean deleteLecture(String lectureName) {
-        return true;
-    }
-
-    public boolean addLecture(String lectureName) {
-        return true;
-    }
-
-    public boolean isNoLectureInfo() { return list == null; }
 
     private void originToList() {
         SharedPreferences sharedPreferences = getSharedPreferences("app_data", MODE_PRIVATE);
@@ -102,6 +95,7 @@ public class ManageLectureList extends Service {
                         }
                         temp++;
                         p.lectureName = e.getLectureName();
+                        p.isLecture = e.lectureInfo[6].equals("true");
                         alreadyAdd.add(p.lectureName);
                     }
                 }
@@ -116,6 +110,7 @@ public class ManageLectureList extends Service {
                             p.timeList[j][0] = Integer.parseInt(e.lectureInfo[j + 1]);
                         }
                         p.lectureName = e.getLectureName();
+                        p.isLecture = e.lectureInfo[6].equals("true");
                     }
                 }
                 int color = colorList.iterator().next();
@@ -123,6 +118,9 @@ public class ManageLectureList extends Service {
                 colorList.remove(color);
             }
             pairedLectureList.add(p);
+        }
+        for (PairedLecture p : pairedLectureList) {
+            Log.d("WMJ", p.toString() + '\n');
         }
     }
 
@@ -189,17 +187,22 @@ public class ManageLectureList extends Service {
 }
 
 class PairedLecture implements Parcelable {
-    PairedLecture(boolean paired, String lectureName, int color, int [][] timeList) {
+    public String toString() {
+        return lectureName + " " + isLecture;
+    }
+    PairedLecture(boolean paired, String lectureName, int color, int [][] timeList, boolean isLecture) {
         this.paired = paired;
         this.lectureName = lectureName;
         this.color = color;
         this.timeList = new int[5][2];
+        this.isLecture = isLecture;
     }
     PairedLecture() {}
     boolean paired = false;
     String lectureName;
     int color;
     int [][] timeList; // row : 0 ~ 4, 0 : 요일, 1 : 시작 시, 2 : 시작 분, 3 : 종료 시, 4 : 종료 분; column : 0(default), 1(paired lecture)
+    boolean isLecture = false;
 
     protected PairedLecture(Parcel in) {
         paired = in.readByte() != 0;
@@ -209,6 +212,7 @@ class PairedLecture implements Parcelable {
         for (int i = 0; i < timeList.length; i++) {
             in.readIntArray(timeList[i]);
         }
+        isLecture = in.readByte() != 0;
     }
     public int getWeekDay(int index) {
         return timeList[0][index];
@@ -227,6 +231,10 @@ class PairedLecture implements Parcelable {
 
     public int[][] getTimeList() {
         return timeList;
+    }
+
+    public boolean getIsLecture() {
+        return isLecture;
     }
 
     public int getStartHour(int index) {
@@ -270,5 +278,6 @@ class PairedLecture implements Parcelable {
         for (int k = 0; k < timeList.length; k++) {
             parcel.writeIntArray(timeList[k]);
         }
+        parcel.writeByte((byte) (isLecture ? 1 : 0));
     }
 }

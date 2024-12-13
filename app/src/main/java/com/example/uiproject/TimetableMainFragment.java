@@ -1,5 +1,6 @@
 package com.example.uiproject;
 
+import static android.content.Context.MODE_PRIVATE;
 import static android.view.Gravity.TOP;
 
 import android.app.AlertDialog;
@@ -11,9 +12,9 @@ import android.os.Handler;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.os.ResultReceiver;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.WindowManager;
@@ -23,10 +24,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.example.uiproject.databinding.TimetableDialogAddplanBinding;
 import com.example.uiproject.databinding.TimetableMainBinding;
@@ -38,7 +42,7 @@ import java.util.StringTokenizer;
 import java.util.concurrent.atomic.AtomicInteger;
 
 
-public class TimetableMain extends AppCompatActivity {
+public class TimetableMainFragment extends Fragment {
     private TimetableMainBinding binding;
     private final int startTime = 9;
     private final int endTime = 21;
@@ -48,12 +52,24 @@ public class TimetableMain extends AppCompatActivity {
     boolean[][][] timetableManager;
     int success;
 
+    public void recreate() {
+        FragmentTransaction transaction = requireActivity().getSupportFragmentManager().beginTransaction();
+        transaction.detach(this).commitNow();
+        transaction = requireActivity().getSupportFragmentManager().beginTransaction();
+        transaction.attach(this).commitNow();
+    }
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        String userInput;
-        super.onCreate(savedInstanceState);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = TimetableMainBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
+        initializeTimetable();
+        return binding.getRoot();
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        String userInput;
         LayoutInflater inflater = getLayoutInflater();
         for (int i = 19 + 1; i <= endTime; i++) {
             TableRow tableRow = (TableRow) inflater.inflate(R.layout.timetable_main_eachrow, null);
@@ -74,12 +90,19 @@ public class TimetableMain extends AppCompatActivity {
                 initializeTimetable();
             }
         });
+        binding.timetableImageButtonAlarm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getContext(), TimetableAlarmMain.class);
+                startActivity(intent);
+            }
+        });
         binding.timetableImageButtonAddPlan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 boolean[] dayClicked = {false, false, false, false, false};
                 TimetableDialogAddplanBinding timetableDialogAddplanBinding = TimetableDialogAddplanBinding.inflate(getLayoutInflater());
-                Dialog dialog = new Dialog(TimetableMain.this);
+                Dialog dialog = new Dialog(getContext());
                 dialog.setContentView(timetableDialogAddplanBinding.getRoot());
                 timetableDialogAddplanBinding.buttonAddplanMon.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -87,16 +110,16 @@ public class TimetableMain extends AppCompatActivity {
                         if (!dayClicked[0]) {
                             setFalse(dayClicked);
                             dayClicked[0] = true;
-                            timetableDialogAddplanBinding.buttonAddplanMon.setTextColor(getColor(R.color.red));
-                            timetableDialogAddplanBinding.buttonAddplanTue.setTextColor(getColor(R.color.black));
-                            timetableDialogAddplanBinding.buttonAddplanWed.setTextColor(getColor(R.color.black));
-                            timetableDialogAddplanBinding.buttonAddplanThu.setTextColor(getColor(R.color.black));
-                            timetableDialogAddplanBinding.buttonAddplanFri.setTextColor(getColor(R.color.black));
-                            timetableDialogAddplanBinding.buttonAddplanAdd.setTextColor(getColor(R.color.black));
+                            timetableDialogAddplanBinding.buttonAddplanMon.setTextColor(requireActivity().getColor(R.color.red));
+                            timetableDialogAddplanBinding.buttonAddplanTue.setTextColor(requireActivity().getColor(R.color.black));
+                            timetableDialogAddplanBinding.buttonAddplanWed.setTextColor(requireActivity().getColor(R.color.black));
+                            timetableDialogAddplanBinding.buttonAddplanThu.setTextColor(requireActivity().getColor(R.color.black));
+                            timetableDialogAddplanBinding.buttonAddplanFri.setTextColor(requireActivity().getColor(R.color.black));
+                            timetableDialogAddplanBinding.buttonAddplanAdd.setTextColor(requireActivity().getColor(R.color.black));
                         } else {
                             dayClicked[0] = false;
-                            timetableDialogAddplanBinding.buttonAddplanMon.setTextColor(getColor(R.color.black));
-                            timetableDialogAddplanBinding.buttonAddplanAdd.setTextColor(getColor(R.color.gray));
+                            timetableDialogAddplanBinding.buttonAddplanMon.setTextColor(requireActivity().getColor(R.color.black));
+                            timetableDialogAddplanBinding.buttonAddplanAdd.setTextColor(requireActivity().getColor(R.color.gray));
                         }
                     }
                 });
@@ -106,16 +129,16 @@ public class TimetableMain extends AppCompatActivity {
                         if (!dayClicked[1]) {
                             setFalse(dayClicked);
                             dayClicked[1] = true;
-                            timetableDialogAddplanBinding.buttonAddplanMon.setTextColor(getColor(R.color.black));
-                            timetableDialogAddplanBinding.buttonAddplanTue.setTextColor(getColor(R.color.red));
-                            timetableDialogAddplanBinding.buttonAddplanWed.setTextColor(getColor(R.color.black));
-                            timetableDialogAddplanBinding.buttonAddplanThu.setTextColor(getColor(R.color.black));
-                            timetableDialogAddplanBinding.buttonAddplanFri.setTextColor(getColor(R.color.black));
-                            timetableDialogAddplanBinding.buttonAddplanAdd.setTextColor(getColor(R.color.black));
+                            timetableDialogAddplanBinding.buttonAddplanMon.setTextColor(requireActivity().getColor(R.color.black));
+                            timetableDialogAddplanBinding.buttonAddplanTue.setTextColor(requireActivity().getColor(R.color.red));
+                            timetableDialogAddplanBinding.buttonAddplanWed.setTextColor(requireActivity().getColor(R.color.black));
+                            timetableDialogAddplanBinding.buttonAddplanThu.setTextColor(requireActivity().getColor(R.color.black));
+                            timetableDialogAddplanBinding.buttonAddplanFri.setTextColor(requireActivity().getColor(R.color.black));
+                            timetableDialogAddplanBinding.buttonAddplanAdd.setTextColor(requireActivity().getColor(R.color.black));
                         } else {
                             dayClicked[1] = false;
-                            timetableDialogAddplanBinding.buttonAddplanTue.setTextColor(getColor(R.color.black));
-                            timetableDialogAddplanBinding.buttonAddplanAdd.setTextColor(getColor(R.color.gray));
+                            timetableDialogAddplanBinding.buttonAddplanTue.setTextColor(requireActivity().getColor(R.color.black));
+                            timetableDialogAddplanBinding.buttonAddplanAdd.setTextColor(requireActivity().getColor(R.color.gray));
                         }
                     }
                 });
@@ -125,16 +148,16 @@ public class TimetableMain extends AppCompatActivity {
                         if (!dayClicked[2]) {
                             setFalse(dayClicked);
                             dayClicked[2] = true;
-                            timetableDialogAddplanBinding.buttonAddplanMon.setTextColor(getColor(R.color.black));
-                            timetableDialogAddplanBinding.buttonAddplanTue.setTextColor(getColor(R.color.black));
-                            timetableDialogAddplanBinding.buttonAddplanWed.setTextColor(getColor(R.color.red));
-                            timetableDialogAddplanBinding.buttonAddplanThu.setTextColor(getColor(R.color.black));
-                            timetableDialogAddplanBinding.buttonAddplanFri.setTextColor(getColor(R.color.black));
-                            timetableDialogAddplanBinding.buttonAddplanAdd.setTextColor(getColor(R.color.black));
+                            timetableDialogAddplanBinding.buttonAddplanMon.setTextColor(requireActivity().getColor(R.color.black));
+                            timetableDialogAddplanBinding.buttonAddplanTue.setTextColor(requireActivity().getColor(R.color.black));
+                            timetableDialogAddplanBinding.buttonAddplanWed.setTextColor(requireActivity().getColor(R.color.red));
+                            timetableDialogAddplanBinding.buttonAddplanThu.setTextColor(requireActivity().getColor(R.color.black));
+                            timetableDialogAddplanBinding.buttonAddplanFri.setTextColor(requireActivity().getColor(R.color.black));
+                            timetableDialogAddplanBinding.buttonAddplanAdd.setTextColor(requireActivity().getColor(R.color.black));
                         } else {
                             dayClicked[2] = false;
-                            timetableDialogAddplanBinding.buttonAddplanWed.setTextColor(getColor(R.color.black));
-                            timetableDialogAddplanBinding.buttonAddplanAdd.setTextColor(getColor(R.color.gray));
+                            timetableDialogAddplanBinding.buttonAddplanWed.setTextColor(requireActivity().getColor(R.color.black));
+                            timetableDialogAddplanBinding.buttonAddplanAdd.setTextColor(requireActivity().getColor(R.color.gray));
                         }
                     }
                 });
@@ -144,16 +167,16 @@ public class TimetableMain extends AppCompatActivity {
                         if (!dayClicked[3]) {
                             setFalse(dayClicked);
                             dayClicked[3] = true;
-                            timetableDialogAddplanBinding.buttonAddplanMon.setTextColor(getColor(R.color.black));
-                            timetableDialogAddplanBinding.buttonAddplanTue.setTextColor(getColor(R.color.black));
-                            timetableDialogAddplanBinding.buttonAddplanWed.setTextColor(getColor(R.color.black));
-                            timetableDialogAddplanBinding.buttonAddplanThu.setTextColor(getColor(R.color.red));
-                            timetableDialogAddplanBinding.buttonAddplanFri.setTextColor(getColor(R.color.black));
-                            timetableDialogAddplanBinding.buttonAddplanAdd.setTextColor(getColor(R.color.black));
+                            timetableDialogAddplanBinding.buttonAddplanMon.setTextColor(requireActivity().getColor(R.color.black));
+                            timetableDialogAddplanBinding.buttonAddplanTue.setTextColor(requireActivity().getColor(R.color.black));
+                            timetableDialogAddplanBinding.buttonAddplanWed.setTextColor(requireActivity().getColor(R.color.black));
+                            timetableDialogAddplanBinding.buttonAddplanThu.setTextColor(requireActivity().getColor(R.color.red));
+                            timetableDialogAddplanBinding.buttonAddplanFri.setTextColor(requireActivity().getColor(R.color.black));
+                            timetableDialogAddplanBinding.buttonAddplanAdd.setTextColor(requireActivity().getColor(R.color.black));
                         } else {
                             dayClicked[3] = false;
-                            timetableDialogAddplanBinding.buttonAddplanThu.setTextColor(getColor(R.color.black));
-                            timetableDialogAddplanBinding.buttonAddplanAdd.setTextColor(getColor(R.color.gray));
+                            timetableDialogAddplanBinding.buttonAddplanThu.setTextColor(requireActivity().getColor(R.color.black));
+                            timetableDialogAddplanBinding.buttonAddplanAdd.setTextColor(requireActivity().getColor(R.color.gray));
                         }
                     }
                 });
@@ -163,16 +186,16 @@ public class TimetableMain extends AppCompatActivity {
                         if (!dayClicked[4]) {
                             setFalse(dayClicked);
                             dayClicked[4] = true;
-                            timetableDialogAddplanBinding.buttonAddplanMon.setTextColor(getColor(R.color.black));
-                            timetableDialogAddplanBinding.buttonAddplanTue.setTextColor(getColor(R.color.black));
-                            timetableDialogAddplanBinding.buttonAddplanWed.setTextColor(getColor(R.color.black));
-                            timetableDialogAddplanBinding.buttonAddplanThu.setTextColor(getColor(R.color.black));
-                            timetableDialogAddplanBinding.buttonAddplanFri.setTextColor(getColor(R.color.red));
-                            timetableDialogAddplanBinding.buttonAddplanAdd.setTextColor(getColor(R.color.black));
+                            timetableDialogAddplanBinding.buttonAddplanMon.setTextColor(requireActivity().getColor(R.color.black));
+                            timetableDialogAddplanBinding.buttonAddplanTue.setTextColor(requireActivity().getColor(R.color.black));
+                            timetableDialogAddplanBinding.buttonAddplanWed.setTextColor(requireActivity().getColor(R.color.black));
+                            timetableDialogAddplanBinding.buttonAddplanThu.setTextColor(requireActivity().getColor(R.color.black));
+                            timetableDialogAddplanBinding.buttonAddplanFri.setTextColor(requireActivity().getColor(R.color.red));
+                            timetableDialogAddplanBinding.buttonAddplanAdd.setTextColor(requireActivity().getColor(R.color.black));
                         } else {
                             dayClicked[4] = false;
-                            timetableDialogAddplanBinding.buttonAddplanFri.setTextColor(getColor(R.color.black));
-                            timetableDialogAddplanBinding.buttonAddplanAdd.setTextColor(getColor(R.color.gray));
+                            timetableDialogAddplanBinding.buttonAddplanFri.setTextColor(requireActivity().getColor(R.color.black));
+                            timetableDialogAddplanBinding.buttonAddplanAdd.setTextColor(requireActivity().getColor(R.color.gray));
                         }
                     }
                 });
@@ -196,46 +219,50 @@ public class TimetableMain extends AppCompatActivity {
                         int endHour = timetableDialogAddplanBinding.numberPickerAddplanEndHour.getValue();
                         int endMin = timetableDialogAddplanBinding.numberPickerAddplanEndMin.getValue();
                         boolean breaker = false;
+                        if (timetableDialogAddplanBinding.editTextAddplanInputPlan.getText().toString().isBlank()) {
+                            Toast.makeText(getContext(),"이름을 입력해주세요!", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
                         if (day != -1) {
                             if (startHour == endHour) {
                                 if (startMin < endMin) {
                                     for (int i = startMin; i < endMin && !breaker; i++) {
                                         if (timetableManager[day][startHour - startTime][i]) {
-                                            Toast.makeText(TimetableMain.this, "다른 시간대를 선택해주세요.", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(getContext(), "다른 시간대를 선택해주세요.", Toast.LENGTH_SHORT).show();
                                             breaker = true;
                                         }
                                     }
                                 } else {
-                                    Toast.makeText(TimetableMain.this, "시작 시간이 종료 시간보다 늦습니다.", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getContext(), "시작 시간이 종료 시간보다 늦습니다.", Toast.LENGTH_SHORT).show();
                                     breaker = true;
                                 }
                             } else if (startHour < endHour) {
                                 for (int i = startMin; i < 60 && !breaker; i++) {
                                     if (timetableManager[day][startHour - startTime][i]) {
-                                        Toast.makeText(TimetableMain.this, "다른 시간대를 선택해주세요.", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(getContext(), "다른 시간대를 선택해주세요.", Toast.LENGTH_SHORT).show();
                                         breaker = true;
                                     }
                                 }
                                 for (int i = startHour + 1; i < endHour - 1 && !breaker; i++) {
                                     for (int j = 0; j < 60 && !breaker; j++) {
                                         if (timetableManager[day][i - startTime][j]) {
-                                            Toast.makeText(TimetableMain.this, "다른 시간대를 선택해주세요.", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(getContext(), "다른 시간대를 선택해주세요.", Toast.LENGTH_SHORT).show();
                                             breaker = true;
                                         }
                                     }
                                 }
                                 for (int i = 0; i < endMin && !breaker; i++) {
                                     if (timetableManager[day][endHour - startTime][i]) {
-                                        Toast.makeText(TimetableMain.this, "다른 시간대를 선택해주세요.", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(getContext(), "다른 시간대를 선택해주세요.", Toast.LENGTH_SHORT).show();
                                         breaker = true;
                                     }
                                 }
                             } else {
-                                Toast.makeText(TimetableMain.this, "시작 시간이 종료 시간보다 늦습니다.", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getContext(), "시작 시간이 종료 시간보다 늦습니다.", Toast.LENGTH_SHORT).show();
                                 breaker = true;
                             }
                             if (!breaker) {
-                                SharedPreferences sharedPreferences = getSharedPreferences("app_data", MODE_PRIVATE);
+                                SharedPreferences sharedPreferences = getActivity().getSharedPreferences("app_data", MODE_PRIVATE);
                                 SharedPreferences.Editor editor = sharedPreferences.edit();
                                 String origin = sharedPreferences.getString("saved_lecturelist", "Oops!");
                                 if (!origin.equals("Oops!")) {
@@ -246,7 +273,8 @@ public class TimetableMain extends AppCompatActivity {
                                             + startHour + " "
                                             + startMin + " "
                                             + endHour + " "
-                                            + endMin + "\n";
+                                            + endMin + " "
+                                            + "false" + "\n";
                                     origin = origin.concat(adder);
                                     editor.putString("saved_lecturelist", origin);
                                     editor.apply();
@@ -254,14 +282,13 @@ public class TimetableMain extends AppCompatActivity {
                                 }
                             }
                         } else {
-                            Toast.makeText(TimetableMain.this, "요일을 선택해주세요.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), "요일을 선택해주세요.", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
                 dialog.show();
             }
         });
-
     }
 
     private String intToDay(int day) {
@@ -303,13 +330,13 @@ public class TimetableMain extends AppCompatActivity {
                 }
             }
         };
-        Intent serviceIntent = new Intent(this, ManageLectureList.class);
+        Intent serviceIntent = new Intent(getContext(), ManageLectureList.class);
         serviceIntent.putExtra("receiver", resultReceiver);
-        startService(serviceIntent);
+        getActivity().startService(serviceIntent);
     }
 
     private void deleteLecture(String lectureName) {
-        SharedPreferences sharedPreferences = getSharedPreferences("app_data", MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("app_data", MODE_PRIVATE);
         String lectureMass = sharedPreferences.getString(getString(R.string.saved_lecturelist), "Oops!");
         StringTokenizer tokenizer = new StringTokenizer(lectureMass, "\n");
         String result = "";
@@ -361,12 +388,12 @@ public class TimetableMain extends AppCompatActivity {
                     y = pos[0][1] + y * eachBlockSize[1] - 8;
                     y += eachBlockSize[1] * p.getStartMin(0) / 60;
                     y += ((binding.timetableTable.getHeight() * 0.05) / 100);
-                    TextView button = new TextView(this);
+                    TextView button = new TextView(getContext());
                     button.setText(p.getLectureName());
                     button.setMinWidth(30);
                     button.setWidth(eachBlockSize[0]);
                     button.setOnClickListener(view -> {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
 
                         LayoutInflater inflater = getLayoutInflater();
                         View dialogView = inflater.inflate(R.layout.timetable_eachbutton_dialog_single, null);
@@ -407,6 +434,7 @@ public class TimetableMain extends AppCompatActivity {
                             public void onClick(View view) {
                                 deleteLecture(p.getLectureName());
                                 recreate();
+                                dialog.dismiss();
                             }
                         });
                     });
@@ -416,7 +444,7 @@ public class TimetableMain extends AppCompatActivity {
                     button.setPadding(4, 4, 0, 0);
                     button.setTextSize(12);
                     button.setHeight(eachBlockSize[1] * ((p.getEndHour(0) * 60 + p.getEndMin(0)) - (p.getStartHour(0) * 60 + p.getStartMin(0))) / 60);
-                    button.setBackground(ContextCompat.getDrawable(this, p.getColor()));
+                    button.setBackground(ContextCompat.getDrawable(getContext(), p.getColor()));
                     binding.getRoot().addView(button);
                 } else {
                     for (int i = 0; i < 2; i++) {
@@ -441,12 +469,12 @@ public class TimetableMain extends AppCompatActivity {
                         y = pos[0][1] + y * eachBlockSize[1] - 8;
                         y += eachBlockSize[1] * p.getStartMin(0) / 60;
                         y += ((binding.timetableTable.getHeight() * 0.05) / 100);
-                        TextView button = new TextView(this);
+                        TextView button = new TextView(getContext());
                         button.setText(p.getLectureName());
                         button.setMinWidth(30);
                         button.setWidth(eachBlockSize[0]);
                         button.setOnClickListener(view -> {
-                            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                             int fastLecture = 0;
                             int slowLecture = 1;
                             if (p.getWeekDay(0) > p.getWeekDay(1)) {
@@ -502,6 +530,7 @@ public class TimetableMain extends AppCompatActivity {
                                 @Override
                                 public void onClick(View view) {
                                     deleteLecture(p.getLectureName());
+                                    dialog.dismiss();
                                     recreate();
                                 }
                             });
@@ -512,7 +541,7 @@ public class TimetableMain extends AppCompatActivity {
                         button.setPadding(4, 4, 0, 0);
                         button.setTextSize(12);
                         button.setHeight(eachBlockSize[1] * ((p.getEndHour(i) * 60 + p.getEndMin(i)) - (p.getStartHour(i) * 60 + p.getStartMin(i))) / 60);
-                        button.setBackground(ContextCompat.getDrawable(this, p.getColor()));
+                        button.setBackground(ContextCompat.getDrawable(getContext(), p.getColor()));
                         binding.getRoot().addView(button);
                     }
                 }
@@ -520,7 +549,7 @@ public class TimetableMain extends AppCompatActivity {
         } else {
             binding.timetableTable.setVisibility(View.GONE);
             binding.timetableTextViewTableName.setVisibility(View.GONE);
-            TextView textView = new TextView(this);
+            TextView textView = new TextView(getContext());
             textView.setText("에브리타임에서 시간표를 추가해주세요!");
             ConstraintLayout.LayoutParams params = new ConstraintLayout.LayoutParams(
                     ConstraintLayout.LayoutParams.WRAP_CONTENT,
@@ -539,19 +568,19 @@ public class TimetableMain extends AppCompatActivity {
 }
 
 class EachLecture implements Parcelable {
-    String[] lectureInfo; // 강의명 / 요일 / 시작 시간/분 / 끝 시간/분 순서로 저장
+    String[] lectureInfo; // 강의명 / 요일 / 시작 시간/분 / 끝 시간/분 / (에타에서 불러온건지:true or false) 순서로 저장
     int color;
 
     public EachLecture(String input) {
         StringTokenizer tokenizer = new StringTokenizer(input, " ");
-        lectureInfo = new String[6];
+        lectureInfo = new String[7];
         int i = 0;
         for (String info : lectureInfo) {
             info = tokenizer.nextToken();
             lectureInfo[i++] = info;
         }
         Random random = new Random();
-        color = TimetableMain.colorList[random.nextInt(15)];
+        color = TimetableMainFragment.colorList[random.nextInt(15)];
     }
 
     protected EachLecture(Parcel in) {
@@ -603,6 +632,10 @@ class EachLecture implements Parcelable {
 
     int getColor() {
         return color;
+    }
+
+    boolean getFromEveryTime() {
+        return lectureInfo[6].equals("true");
     }
 
     @Override

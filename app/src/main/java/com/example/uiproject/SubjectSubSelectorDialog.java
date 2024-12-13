@@ -1,6 +1,7 @@
 package com.example.uiproject;
 
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -28,6 +29,20 @@ public class SubjectSubSelectorDialog extends DialogFragment {
     List<RoomInfo> list;
     RecyclerView recyclerView;
     SubjectAdapter adapter;
+    public OnDismissListener onDismissListener;
+
+    interface OnDismissListener {
+        void onDismiss();
+    }
+    public void setOnDismissListener(OnDismissListener onDismissListener) {
+        this.onDismissListener = onDismissListener;
+    }
+
+    @Override
+    public void onDismiss(@NonNull DialogInterface dialog) {
+        super.onDismiss(dialog);
+        onDismissListener.onDismiss();
+    }
 
     @NonNull
     @Override
@@ -61,10 +76,12 @@ public class SubjectSubSelectorDialog extends DialogFragment {
                     pairedLectureList = resultData.getParcelableArrayList("pairedLectureList");
                 }
                 for (int i = 0; i < pairedLectureList.size(); i++) {
-                    RoomInfo temp = new RoomInfo();
-                    temp.participatingNum = 0;
-                    temp.roomName = pairedLectureList.get(i).getLectureName();
-                    list.add(temp);
+                    if (pairedLectureList.get(i).isLecture) {
+                        RoomInfo temp = new RoomInfo();
+                        temp.participatingNum = 0;
+                        temp.roomName = pairedLectureList.get(i).getLectureName();
+                        list.add(temp);
+                    }
                 }
                 updateRecyclerView();
             }
