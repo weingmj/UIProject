@@ -69,7 +69,6 @@ public class TimetableMainFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        String userInput;
         LayoutInflater inflater = getLayoutInflater();
         for (int i = 19 + 1; i <= endTime; i++) {
             TableRow tableRow = (TableRow) inflater.inflate(R.layout.timetable_main_eachrow, null);

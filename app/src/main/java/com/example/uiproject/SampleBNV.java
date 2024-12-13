@@ -1,7 +1,9 @@
 package com.example.uiproject;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -31,10 +33,16 @@ public class SampleBNV extends AppCompatActivity {
                             .commit();
                     return true;
                 } else if (itemId == R.id.page_2) {
-                    getSupportFragmentManager()
-                            .beginTransaction()
-                            .replace(R.id.fragment_container, new TimetableMainFragment())
-                            .commit();
+                    SharedPreferences pref = getSharedPreferences("app_data", MODE_PRIVATE);
+                    if (pref.getString("saved_lecturelist", null) == null) {
+                        Toast.makeText(SampleBNV.this, "에브리타임에서 시간표를 먼저 불러와야 사용 가능합니다!", Toast.LENGTH_SHORT).show();
+                        return false;
+                    } else {
+                        getSupportFragmentManager()
+                                .beginTransaction()
+                                .replace(R.id.fragment_container, new TimetableMainFragment())
+                                .commit();
+                    }
                     return true;
                 }
                 return false;

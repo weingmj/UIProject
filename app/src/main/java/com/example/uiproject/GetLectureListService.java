@@ -76,7 +76,7 @@ public class GetLectureListService extends Service {
         Log.d("WMJ", result);
         SharedPreferences sharedPreferences = getSharedPreferences("app_data", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString(getString(R.string.saved_lecturelist), result);
+        editor.putString("saved_lecturelist", result);
         editor.apply();
         receiver.send(0, null);
     }
