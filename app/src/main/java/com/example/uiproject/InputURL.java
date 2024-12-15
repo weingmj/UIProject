@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -39,6 +40,11 @@ public class InputURL extends AppCompatActivity {
                     @Override
                     protected void onReceiveResult(int resultCode, Bundle resultData) {
                         if (resultCode == 0) {
+                            Log.d("WMJ", "0 result");
+                            rootView.removeView(progressView);
+                        } else {
+                            Log.d("WMJ", "1 result");
+                            Toast.makeText(InputURL.this, "잘못된 URL 입력입니다.", Toast.LENGTH_SHORT).show();
                             rootView.removeView(progressView);
                         }
                     }

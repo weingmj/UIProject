@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <EditText
+        android:id="@+id/emailEditText"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:hint="대학교 이메일" />
+
+    <EditText
+        android:id="@+id/univNameEditText"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:hint="대학교 이름" />
+
+    <Button
+        android:id="@+id/sendCodeButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="인증 코드 발송" />
+    <EditText
+        android:id="@+id/inputCode"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:hint="인증코드"/>
+    <Button
+        android:id="@+id/codeCertify"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="인증코드 인증"/>
+
+    <Button
+        android:id="@+id/initialize"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:text="초기화"/>
+</LinearLayout>

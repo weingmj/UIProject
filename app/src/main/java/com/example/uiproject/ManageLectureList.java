@@ -13,6 +13,8 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.google.firebase.firestore.FirebaseFirestore;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -41,6 +43,21 @@ public class ManageLectureList extends Service {
         bundle.putParcelableArrayList("pairedLectureList", (ArrayList<? extends Parcelable>) pairedLectureList);
         bundle.putParcelableArrayList("eachLectureList", (ArrayList<? extends Parcelable>) list);
         bundle.putSerializable("timetableManager", timetableManager);
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        List<List<List<Boolean>>> scheduleList = convertArrayToList(timetableManager);
+        List<Boolean> flatList = new ArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            for (int j = 0; j < 13; j++) {
+                for (int k = 0; k < 60; k++) {
+                    flatList.add(scheduleList.get(i).get(j).get(k));
+                }
+            }
+        }
+        String userId = "dvhjzHFld3TCEwWzqAQrBoUdGbw1"; // SharedPref에서 내 UID 가져와야함........
+        db.collection("users").document(userId)
+                .update("schedule", flatList);
+
         ResultReceiver receiver = intent.getParcelableExtra("receiver");
         receiver.send(0, bundle);
 
@@ -53,6 +70,21 @@ public class ManageLectureList extends Service {
         throw new UnsupportedOperationException("Not yet implemented");
     }
 
+    public List<List<List<Boolean>>> convertArrayToList(boolean[][][] array) {
+        List<List<List<Boolean>>> list = new ArrayList<>();
+        for (boolean[][] twoDArray : array) {
+            List<List<Boolean>> twoDList = new ArrayList<>();
+            for (boolean[] oneDArray : twoDArray) {
+                List<Boolean> oneDList = new ArrayList<>();
+                for (boolean value : oneDArray) {
+                    oneDList.add(value);
+                }
+                twoDList.add(oneDList);
+            }
+            list.add(twoDList);
+        }
+        return list;
+    }
 
     private void originToList() {
         SharedPreferences sharedPreferences = getSharedPreferences("app_data", MODE_PRIVATE);
@@ -118,9 +150,6 @@ public class ManageLectureList extends Service {
                 colorList.remove(color);
             }
             pairedLectureList.add(p);
-        }
-        for (PairedLecture p : pairedLectureList) {
-            Log.d("WMJ", p.toString() + '\n');
         }
     }
 

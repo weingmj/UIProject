@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.CompoundButton;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -51,6 +52,7 @@ public class TimetableMainFragment extends Fragment {
     List<PairedLecture> pairedLectureList;
     boolean[][][] timetableManager;
     int success;
+    String isSubject = "false";
 
     public void recreate() {
         FragmentTransaction transaction = requireActivity().getSupportFragmentManager().beginTransaction();
@@ -206,6 +208,17 @@ public class TimetableMainFragment extends Fragment {
                 timetableDialogAddplanBinding.numberPickerAddplanEndHour.setMaxValue(endTime);
                 timetableDialogAddplanBinding.numberPickerAddplanEndMin.setMinValue(0);
                 timetableDialogAddplanBinding.numberPickerAddplanEndMin.setMaxValue(59);
+                timetableDialogAddplanBinding.checkBoxAddplanIsSubject.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                        if (isChecked) {
+                            isSubject = "true";
+                        } else {
+                            isSubject = "false";
+                        }
+                    }
+                });
+
                 timetableDialogAddplanBinding.buttonAddplanAdd.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -264,6 +277,7 @@ public class TimetableMainFragment extends Fragment {
                                 SharedPreferences sharedPreferences = getActivity().getSharedPreferences("app_data", MODE_PRIVATE);
                                 SharedPreferences.Editor editor = sharedPreferences.edit();
                                 String origin = sharedPreferences.getString("saved_lecturelist", "Oops!");
+
                                 if (!origin.equals("Oops!")) {
                                     origin = origin.trim();
                                     String adder = "\n" +
@@ -273,11 +287,12 @@ public class TimetableMainFragment extends Fragment {
                                             + startMin + " "
                                             + endHour + " "
                                             + endMin + " "
-                                            + "false" + "\n";
+                                            + isSubject + "\n";
                                     origin = origin.concat(adder);
                                     editor.putString("saved_lecturelist", origin);
                                     editor.apply();
                                     recreate();
+                                    dialog.dismiss();
                                 }
                             }
                         } else {

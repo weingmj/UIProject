@@ -137,8 +137,6 @@
         android:layout_height="100dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
-        android:layout_marginBottom="32dp"
-        app:layout_constraintBottom_toTopOf="@+id/button_addplan_add"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/numberPicker_addplan_startHour" />
 
@@ -173,7 +171,7 @@
 
     <Button
         android:id="@+id/button_addplan_add"
-        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        style="@style/Widget.Material3.Button.OutlinedButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
@@ -182,4 +180,15 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <CheckBox
+        android:id="@+id/checkBox_addplan_isSubject"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+        android:text="수강 과목 여부"
+        app:layout_constraintBottom_toTopOf="@+id/button_addplan_add"
+        app:layout_constraintStart_toStartOf="@+id/numberPicker_addplan_endHour"
+        app:layout_constraintTop_toBottomOf="@+id/numberPicker_addplan_endHour" />
 </androidx.constraintlayout.widget.ConstraintLayout>

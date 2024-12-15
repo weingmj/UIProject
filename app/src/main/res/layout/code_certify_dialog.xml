@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:paddingTop="16dp"
+    android:paddingEnd="32dp"
+    android:paddingBottom="32dp">
+
+    <TableLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TableRow
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_marginStart="16dp"
+                android:text="code"
+                android:textSize="24sp" />
+
+            <EditText
+                android:id="@+id/editText_email_code"
+                android:layout_marginStart="32dp"
+                android:hint="코드입력"
+                android:gravity="center"
+                android:textSize="32sp" />
+
+        </TableRow>
+
+        <TableRow
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <Button
+                android:id="@+id/button_certify_code"
+                style="@style/Widget.Material3.Button.TextButton"
+                android:layout_height="50dp"
+                android:layout_column="1"
+                android:layout_marginStart="-32dp"
+                android:layout_marginEnd="40dp"
+                android:text="인증"
+                android:textSize="20sp" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <Button
+                android:id="@+id/button_initializr"
+                style="@style/Widget.Material3.Button.TextButton"
+                android:layout_height="50dp"
+                android:layout_column="1"
+                android:layout_marginStart="-32dp"
+                android:layout_marginEnd="40dp"
+                android:text="초기화"
+                android:textSize="20sp" />
+        </TableRow>
+    </TableLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

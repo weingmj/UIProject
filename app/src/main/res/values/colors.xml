@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#4CAF50</color> <!-- 중간 초록색 -->
-    <color name="colorPrimaryDark">#388E3C</color> <!-- 어두운 초록색 -->
-    <color name="colorAccent">#81C784</color> <!-- 밝은 초록색 -->
+    <color name="colorPrimary">#7752FE</color> <!-- 중간 초록색 -->
+    <color name="colorPrimaryDark">#190482</color> <!-- 어두운 초록색 -->
+    <color name="colorAccent">#8E8FFA</color> <!-- 밝은 초록색 -->
     <color name="white">#FFFFFF</color>
     <color name="ivory">#FFFFF0</color>
     <color name="light_yellow">#FFFFE0</color>
@@ -143,4 +143,6 @@
     <color name="dark_blue">#00008B</color>
     <color name="navy">#000080</color>
     <color name="black">#000000</color>
+    <color name="colorDefault">#FFFFFF</color> <!-- 기본 배경색 -->
+    <color name="colorPressed">#E0E0E0</color> <!-- 클릭 시 배경색 -->
 </resources>

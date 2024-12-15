@@ -7,6 +7,7 @@ import android.os.IBinder;
 import android.os.ResultReceiver;
 import android.util.Log;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import java.io.BufferedReader;
@@ -20,7 +21,7 @@ public class GetLectureListService extends Service {
     private static final String TAG = "GetLectureList";
     ResultReceiver receiver;
     boolean isFromEverytime = false;
-
+    boolean isSucceed = false;
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         String userInput = intent.getStringExtra("url");
@@ -55,30 +56,38 @@ public class GetLectureListService extends Service {
                     response.append(inputLine);
                     response.append('\n');
                 }
-                saveDataToStringsXml(response.toString());
-                in.close();
-            } else {
-                Log.e(TAG, "GET request failed");
+                if (!response.toString().isBlank()) {
+                    saveDataToStringsXml(response.toString());
+                    in.close();
+                    isSucceed = true;
+                }
             }
-
             connection.disconnect();
         } catch (Exception e) {
-            Log.e(TAG, "Error during request", e);
+            Log.d(TAG, "Error during request");
         }
     }
 
     private void saveDataToStringsXml(String data) {
-        StringTokenizer tokenizer = new StringTokenizer(data, "\n");
-        String result = "";
-        while (tokenizer.hasMoreTokens()) {
-            result = result.concat(tokenizer.nextToken() + " true\n");
+        try {
+            StringTokenizer tokenizer = new StringTokenizer(data, "\n");
+            String result = "";
+            while (tokenizer.hasMoreTokens()) {
+                result = result.concat(tokenizer.nextToken() + " true\n");
+                if (result.equals("Error: invalid argument true\n")
+                || result.equals("Error: Invalid URL parameter. true\n")) throw new Exception();
+            }
+            SharedPreferences sharedPreferences = getSharedPreferences("app_data", MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString("saved_lecturelist", result);
+            editor.apply();
+            receiver.send(0, null);
+            Log.d("WMJ", result);
+        } catch (Exception e){
+            receiver.send(-1, null);
         }
-        Log.d("WMJ", result);
-        SharedPreferences sharedPreferences = getSharedPreferences("app_data", MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("saved_lecturelist", result);
-        editor.apply();
-        receiver.send(0, null);
+        isSucceed = false;
+
     }
 
     @Nullable

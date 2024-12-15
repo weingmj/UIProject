@@ -16,7 +16,21 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.UIProject"
         tools:targetApi="31">
+        <activity
+            android:name=".SchedulerTimeTuner"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".PWAuthActivity"
+            android:exported="true"/>
+        <activity
+            android:name=".BottomMain"
+            android:exported="true"/>
         <activity
             android:name=".SchedulerMain"
             android:exported="true">
@@ -26,6 +40,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".SchedulerFriendSearcher"
+            android:exported="true" />
         <activity
             android:name=".SampleBNV"
             android:exported="true"
@@ -47,8 +64,8 @@
         </activity>
         <activity
             android:name=".TimetableAlarmMain"
-            android:theme="@style/Theme.AppCompat.Dialog"
-            android:exported="true" />
+            android:exported="true"
+            android:theme="@style/Theme.AppCompat.Dialog" />
         <activity
             android:name=".SubjectEnterRoomDialog"
             android:exported="true">
@@ -96,6 +113,7 @@
         </activity>
         <activity
             android:name=".InputURL"
+            android:theme="@style/Theme.Material3.DayNight.Dialog"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -119,54 +137,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".CommunitySelectingMajor"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".CommunitySelectingGroup"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".CommunityReply"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".CommunityMain"
-            android:exported="true" />
-        <activity
-            android:name=".MainActivity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".CommunityPost"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
         <activity
             android:name=".TimetableMainFragment"
             android:exported="true">
@@ -176,15 +147,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".ForumActivity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
     </application>
 
 </manifest>
